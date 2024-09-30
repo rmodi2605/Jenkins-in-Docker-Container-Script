@@ -20,7 +20,6 @@ function create_jenkins_container  () {
         sudo docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_volume:/var/jenkins_home --name jenkins jenkins/jenkins:lts
         sleep 5s
         echo -e "\nJenkins Container Created \U1F44D\n"
-        sleep 5s
     else
         echo -e "\n\033[31mDocker Service is NOT running\033[0m\n"
         exit 1
@@ -30,9 +29,9 @@ function create_jenkins_container  () {
 
 function verify_jenkins_container () {
     jenkins_container_status=$(sudo docker ps | grep jenkins | egrep -o "Up")
+    jenkins_passwd=$(sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword)
     if [[ $jenkins_container_status == Up ]] ;
     then
-        jenkins_passwd=$(sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword)
         echo -e "\n\U1F517 Jenkins url : http://localhost:8080/ "
         echo -e "\n\U1F464 Jenkins Username : admin "
         echo -e "\n\U1F511 Jenkins Password : $jenkins_passwd "
@@ -53,7 +52,7 @@ then
     echo -e "\nInternet is Working Fine \U1F44D\n"
     echo -e "\n\U2795 Trying to Install Docker . . . \n"
     install_docker
-else 
+else
     echo -e "\n\033[31mPlease Check Internet Connection \U1F615 \033[0m\n"
     exit 1
 fi
@@ -67,8 +66,8 @@ then
     echo -e "\nDocker Installed Successfully \U1F44D\n"
     echo -e "\n\U2795 Creating Jenkins Container . . . \n"
     create_jenkins_container
-    sleep 5s
     echo -e "\n\U1F50D Getting Jenkins Container Details . . . \n"
+    sleep 5s
     verify_jenkins_container
 else
     echo -e "\n\033[31mDocker Installation Failed\033[0m\n"
