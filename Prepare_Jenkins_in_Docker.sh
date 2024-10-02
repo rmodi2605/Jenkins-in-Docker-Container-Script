@@ -3,7 +3,7 @@
 function install_docker () {
     sudo apt update -y -qq > /dev/null 2>&1
     echo -e "\n\U2795 Trying to Install Docker & Other Required Packages . . . \n"
-    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin bash-completion -qq > /dev/null 2>&1
+    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin bash-completion -qq
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker -o /etc/bash_completion.d/docker
