@@ -1,12 +1,11 @@
 #! /bin/bash
 
 function install_docker () {
-    sudo apt update -y
-    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common -y
+    sudo apt update -y -qq > /dev/null 2>&1
+    echo -e "\n\U2795 Trying to Install Docker & Other Required Packages . . . \n"
+    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin bash-completion -qq > /dev/null 2>&1
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt update -y
-    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin bash-completion
     sudo curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker -o /etc/bash_completion.d/docker
     source ~/.bashrc
     sudo  systemctl start docker.service
@@ -50,7 +49,6 @@ check_internet=$(ping 1.1.1.1 -c 5  | grep time)
 if [[ $check_internet != *"100% packet loss"* ]] ;
 then
     echo -e "\nInternet is Working Fine \U1F44D\n"
-    echo -e "\n\U2795 Trying to Install Docker . . . \n"
     install_docker
 else
     echo -e "\n\033[31mPlease Check Internet Connection \U1F615 \033[0m\n"
