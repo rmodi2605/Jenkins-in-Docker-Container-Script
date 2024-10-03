@@ -1,11 +1,13 @@
 #! /bin/bash
 
 function install_docker () {
-    sudo apt update -y -qq > /dev/null 2>&1
     echo -e "\n\U2795 Trying to Install Docker & Other Required Packages . . . \n"
-    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin bash-completion -qq
+    sudo apt update -y -qq > /dev/null 2>&1
+    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common -qq > /dev/null 2>&1
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt update -y -qq > /dev/null 2>&1
+    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin bash-completion -qq
     sudo curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker -o /etc/bash_completion.d/docker
     source ~/.bashrc
     sudo  systemctl start docker.service
@@ -26,19 +28,27 @@ function create_jenkins_container  () {
 }
 
 
-function verify_jenkins_container () {
+function check_jenkins_container () {
     jenkins_container_status=$(sudo docker ps | grep jenkins | egrep -o "Up")
-    jenkins_passwd=$(sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword)
     if [[ $jenkins_container_status == Up ]] ;
     then
-        echo -e "\n\U1F517 Jenkins url : http://localhost:8080/ "
-        echo -e "\n\U1F464 Jenkins Username : admin "
-        echo -e "\n\U1F511 Jenkins Password : $jenkins_passwd "
-        echo -e "\n\U1F4BE Jenkins Persistent Volume Storage Path on Host : /var/lib/docker/volumes/jenkins_volume/ "
-        echo -e "\n\U1F4BD Jenkins Volume Mount Path on Container : /var/jenkins_home/ \n"
+        echo -e "Jenkins Container is Running \U1F44D\n"
     else
         echo -e "\n\033[31mJenkins Container is NOT running\033[0m\n"
+        exit 1
     fi
+}
+
+
+function get_jenkins_details () {
+    echo -e "\n\U1F50D Getting Jenkins Container Details . . . \n"
+    sudo docker logs --follow  jenkins 2>&1  | egrep -q "/var/jenkins_home/secrets/initialAdminPassword"
+    jenkins_passwd=$(sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword)
+    echo -e "\n\U1F517 Jenkins url : http://localhost:8080/ "
+    echo -e "\n\U1F464 Jenkins Username : admin "
+    echo -e "\n\U1F511 Jenkins Password : $jenkins_passwd "
+    echo -e "\n\U1F4BE Jenkins Persistent Volume Storage Path on Host : /var/lib/docker/volumes/jenkins_volume/ "
+    echo -e "\n\U1F4BD Jenkins Volume Mount Path on Container : /var/jenkins_home/ \n"
 }
 
 
@@ -64,9 +74,8 @@ then
     echo -e "\nDocker Installed Successfully \U1F44D\n"
     echo -e "\n\U2795 Creating Jenkins Container . . . \n"
     create_jenkins_container
-    echo -e "\n\U1F50D Getting Jenkins Container Details . . . \n"
-    sleep 5s
-    verify_jenkins_container
+    check_jenkins_container
+    get_jenkins_details
 else
     echo -e "\n\033[31mDocker Installation Failed\033[0m\n"
     exit 1
