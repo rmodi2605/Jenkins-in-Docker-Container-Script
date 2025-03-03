@@ -1,5 +1,5 @@
 
-# Jenkins-in-Docker-Container-Script
+# Jenkins in Docker Container Script
 
 The objective of this Project is to create a bash script that automatically setup ready to use Jenkins in Docker container From Scratch.
 <br>
@@ -44,7 +44,7 @@ DISTRIB_DESCRIPTION="Ubuntu 24.04 LTS"
 ```
 
 
-### Make Script Executable & Run it
+## Make Script Executable & Run it
 ```bash
 cd Jenkins-in-Docker-Container-Script 
 
@@ -58,7 +58,7 @@ sudo chmod +x Prepare_Jenkins_in_Docker.sh
 
 ---
 
-### Demo
+## Demonstration
 ``` bash
 
 🌐 Checking Internet Connection . . .
