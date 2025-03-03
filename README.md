@@ -42,7 +42,7 @@ DISTRIB_RELEASE=24.04
 DISTRIB_CODENAME=noble
 DISTRIB_DESCRIPTION="Ubuntu 24.04 LTS"
 ```
-
+<br>
 
 ## Make Script Executable & Run it
 ```bash
